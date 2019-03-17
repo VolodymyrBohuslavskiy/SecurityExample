@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 public class mainController {
     @Autowired
@@ -21,10 +23,10 @@ public class mainController {
     PasswordEncoder passwordEncoder; //Шифрування паролю
 
     @PostMapping("/add")
-    public void add(@RequestBody User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userDAO.save(user);
-        System.out.println(user);
+    public void add(@RequestBody String user) throws IOException {
+        User newUser = new ObjectMapper().readValue(user, User.class);
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        userDAO.save(newUser);
     }
 
     @GetMapping("/show")
